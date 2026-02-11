@@ -13,10 +13,16 @@ public class ShopRepository {
         tmp[tmp.length - 1] = product;
         return tmp;
     }
-
+    //Перед добавлением проверяется, существует ли уже товар с таким же id.
     public void add(Product product) {
+        if (findById(product.getId()) != null) {
+            throw new AlreadyExistsException(
+                    "Product with id: " + product.getId() + " already exists"
+            );
+        }
         products = addToArray(products, product);
     }
+
 
     public Product[] findAll() {
         return products;

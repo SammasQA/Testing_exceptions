@@ -16,30 +16,33 @@ class ShopRepositoryTest {
     }
 
     @Test
-    void shouldRemoveExistingProduct() {
+    void shouldAddProductSuccessfully() {
         // given
-        Product product1 = new Product(1, "Книга", 500);
-        Product product2 = new Product(2, "Ручка", 50);
-        repository.add(product1);
-        repository.add(product2);
+        Product product = new Product(1, "Книга", 500);
 
+        // when
+        repository.add(product);
 
-        repository.remove(1);
-
-
-        Product[] expected = {product2};
+        // then
+        Product[] expected = {product};
         assertArrayEquals(expected, repository.findAll());
     }
 
     @Test
-    void shouldThrowNotFoundExceptionWhenRemovingNonExistingProduct() {
+    void shouldThrowAlreadyExistsExceptionWhenAddingProductWithDuplicateId() {
         // given
-        repository.add(new Product(1, "Книга", 500));
+        Product product1 = new Product(1, "Книга", 500);
+        Product product2 = new Product(1, "Ручка", 50); // тот же id
+
+        repository.add(product1);
 
         // when + then
-        NotFoundException exception = assertThrows(NotFoundException.class,
-                () -> repository.remove(100));
+        AlreadyExistsException exception = assertThrows(AlreadyExistsException.class,
+                () -> repository.add(product2));
 
-        assertEquals("Element with id: 100 not found", exception.getMessage());
+        assertEquals("Product with id: 1 already exists", exception.getMessage());
+        // Проверим, что первый товар остался, второй не добавился
+        Product[] expected = {product1};
+        assertArrayEquals(expected, repository.findAll());
     }
 }
