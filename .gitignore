@@ -11,7 +11,7 @@ target/
 *.iws
 *.iml
 *.ipr
-.gigaide
+.gigaide/
 .idea
 
 Testing_exceptions/
